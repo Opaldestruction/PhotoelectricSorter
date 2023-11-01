@@ -15,32 +15,38 @@ wavelength = 0  # Wavelength (in meters)
 WF_database = pd.read_csv('WF_database_29270_part1.csv')
 WF_database2 = pd.read_csv('WF_database_29270_part2.csv')
 
-aluminums, aluminumsH = [], []
-zincs, zincsH = [], []
-magnesiums, magnesiumsH = [], []
-silicons, siliconsH = [], []
-titaniums, titaniumsH = [], []
-
+aluminums, aluminumsH, aluminumsErr = [], [], []
+zincs, zincsH, zincsErr = [], [], []
+magnesiums, magnesiumsH, magnesiumsErr = [], [], []
+silicons, siliconsH, siliconsErr = [], [], []
+titaniums, titaniumsH, titaniumsErr = [], [], []
+savedMatNameAl, numAluminums = '', 1
+savedMatNameZn, numZincs = '', 1
+savedMatNameMn, numMagnesiums = '', 1
+savedMatNameSi, numSilicons = '', 1
+savedMatNameTi, numTitaniums = '', 1
 wf = 0  # work function
 matName = 'AlCl'  # name of the material
+
 print(len(WF_database.columns))
 print(WF_database.size / len(WF_database.columns))
 
 for row in WF_database.itertuples(index=False):
     matName = row.surface_elements_string
     if "Al" in matName:
-        utils.duplicate_averager(aluminums, aluminumsH, matName, row)
+        utils.duplicate_averager(aluminums, aluminumsH, matName, row, savedMatNameAl, numAluminums)
+        # utils.duplicate_stderr(aluminums, aluminumsH, aluminumsErr, matName, row, savedMatNameAl, numAluminums)
     if "Zn" in matName:
-        utils.duplicate_averager(zincs, zincsH, matName, row)
+        utils.duplicate_averager(zincs, zincsH, matName, row, savedMatNameZn, numZincs)
 
     if "Mn" in matName:
-        utils.duplicate_averager(magnesiums, magnesiumsH, matName, row)
+        utils.duplicate_averager(magnesiums, magnesiumsH, matName, row, savedMatNameMn, numMagnesiums)
 
     if "Si" in matName:
-        utils.duplicate_averager(silicons, siliconsH, matName, row)
+        utils.duplicate_averager(silicons, siliconsH, matName, row, savedMatNameSi, numSilicons)
 
     if "Ti" in matName:
-        utils.duplicate_averager(titaniums, titaniumsH, matName, row)
+        utils.duplicate_averager(titaniums, titaniumsH, matName, row, savedMatNameTi, numTitaniums)
 
 # gray = Color("#a2b1ae")  # defining gray
 # colors = list(gray.range_to(Color("#010101"), aluminums.__len__()))  # Color is a gradient from gray to white

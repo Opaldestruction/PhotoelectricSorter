@@ -21,15 +21,33 @@ titaniums, titaniumsH = [], []
 
 wf = 0  # work function
 matName = 'AlCl'  # name of the material
+numDuplicates = 1
+savedMatName = ''
 print(len(WF_database.columns))
 print(WF_database.size / len(WF_database.columns))
 
 for row in WF_database.itertuples(index=False):
     matName = row.surface_elements_string
     if "Al" in matName:
-        aluminums.insert(aluminums.__len__(), matName)
-        aluminumsH.insert(aluminumsH.__len__(), row.WF)
-
+        try:
+            i = aluminums.index(matName)
+        except ValueError:
+            aluminums.insert(aluminums.__len__(), matName)
+            aluminumsH.insert(aluminumsH.__len__(), row.WF)
+            if not (savedMatName == ''):
+                aluminumsH[aluminums.index(savedMatName)] /= numDuplicates
+                savedMatName = ''
+                numDuplicates = 1
+        else:
+            if savedMatName == matName:
+                aluminumsH[i] += row.WF
+                numDuplicates += 1
+            elif savedMatName == '':
+                savedMatName = matName
+            else:
+                aluminumsH[aluminums.index(savedMatName)] /= numDuplicates
+                savedMatName = ''
+                numDuplicates = 1
     if "Zn" in matName:
         zincs.insert(zincs.__len__(), matName)
         zincsH.insert(zincsH.__len__(), row.WF)
@@ -46,11 +64,10 @@ for row in WF_database.itertuples(index=False):
         titaniums.insert(titaniums.__len__(), matName)
         titaniumsH.insert(titaniumsH.__len__(), row.WF)
 
-
+print(aluminums)
 
 gray = Color("#a2b1ae")
 fig, al = plt.subplots()
-
 colors = list(gray.range_to(Color("#010101"), aluminums.__len__()))
 for i, color in enumerate(colors):
     colors[i] = color.hex
